@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
+import os
+
 
 # Open the image files.
-img1_color = cv2.imread("align.jpg")  # Image to be aligned.
-img2_color = cv2.imread("ref.jpg")    # Reference image.
-
+img1_color = cv2.imread(os.path.join("data", "align.jpg"))  # Image to be aligned.
+img2_color = cv2.imread(os.path.join("data", "ref.jpg"))    # Reference image.
 # Convert to grayscale.
 img1 = cv2.cvtColor(img1_color, cv2.COLOR_BGR2GRAY)
 img2 = cv2.cvtColor(img2_color, cv2.COLOR_BGR2GRAY)
@@ -25,7 +26,7 @@ kp2, d2 = orb_detector.detectAndCompute(img2, None)
 matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck = True)
 
 # Match the two sets of descriptors.
-matches = matcher.match(d1, d2)
+matches = list(matcher.match(d1, d2))
 
 # Sort matches on the basis of their Hamming distance.
 matches.sort(key = lambda x: x.distance)
@@ -51,4 +52,4 @@ transformed_img = cv2.warpPerspective(img1_color,
                     homography, (width, height))
 
 # Save the output.
-cv2.imwrite('output.jpg', transformed_img)
+cv2.imwrite(os.path.join("out", "resultado.jpg"), transformed_img)
